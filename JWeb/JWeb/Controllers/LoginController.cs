@@ -8,5 +8,17 @@ namespace JWeb.Controllers
         {
             return View();
         }
+
+        public IActionResult CrearCuenta()
+        {
+            return View();
+        }
+
+        public IActionResult RecuperarAcceso()
+        {
+            return View();
+        }
+
+        
     }
 }
