@@ -1,4 +1,5 @@
-﻿
+﻿@model Usuario
+
 @{
     Layout = "~/Views/Shared/_Layout_Externo.cshtml";
 }
@@ -14,26 +15,40 @@
                             <a href="@Url.Action("Index","Home")" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="~/images/logo-light.svg" alt="">
                             </a>
-                            <p class="text-center">Your Social Campaigns</p>
-                            <form>
+
+                            <p class="text-center">Registro de usuarios</p>
+                            
+                            @using (Html.BeginForm("CrearCuenta", "Login"))
+
+                            { 
                                 <div class="mb-3">
-                                    <label for="exampleInputtext1" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="exampleInputtext1" aria-describedby="textHelp">
+                                    <label class="form-label">Identificación</label>
+                                    @Html.TextBoxFor(m => m.Identificacion, new { @class = "form-control" })
                                 </div>
+                              
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <label class="form-label">Nombre</label>
+                                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
                                 </div>
-                                <div class="mb-4">
-                                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="exampleInputPassword1">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Correo Electrónico</label>
+                                    @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", @type = "email" })
                                 </div>
-                                <a href="./index.html" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign Up</a>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña</label>
+                                    @Html.TextBoxFor(m => m.Contrasenna, new { @class = "form-control", @type = "password" })
+                                </div>
+                                
+                                <input type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4" value="Procesar">
+                                
                                 <div class="d-flex align-items-center justify-content-center">
-                                    <p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
-                                    <a class="text-primary fw-bold ms-2" href="@Url.Action("InicioSesion","Login")">Iniciar Sesión</a>
+                                    <p class="fs-4 mb-0 fw-bold">Ya tienes una cuenta?</p>
+                                    <a class="text-primary fw-bold ms-2" href="@Url.Action("InicioSesion","Login")">Inicia Sesión</a>
                                 </div>
-                            </form>
+                            }
+
                         </div>
                     </div>
                 </div>
