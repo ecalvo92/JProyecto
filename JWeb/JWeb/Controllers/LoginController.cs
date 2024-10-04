@@ -5,6 +5,12 @@ namespace JWeb.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly IHttpClientFactory _http;
+        public LoginController(IHttpClientFactory http)
+        {
+            _http = http;
+        }
+
         [HttpGet]
         public IActionResult CrearCuenta()
         {
@@ -14,6 +20,20 @@ namespace JWeb.Controllers
         [HttpPost]
         public IActionResult CrearCuenta(Usuario model)
         {
+            using (var client = _http.CreateClient())
+            {
+                string url = "https://localhost:7077/api/Login/CrearCuenta";
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+
+                if (response.IsSuccessStatusCode)
+                { 
+                    var result = response.Content.ReadFromJsonAsync<Usuario>().Result;
+                }
+
+            }
+
             return View();
         }
 
