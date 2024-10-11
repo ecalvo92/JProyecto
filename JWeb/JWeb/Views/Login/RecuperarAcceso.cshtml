@@ -18,11 +18,11 @@
 
                             <p class="text-center">Recuperar acceso</p>
                             
-                            @using (Html.BeginForm("RecuperarAcceso", "Login"))
-                            {
+                            <form asp-action="RecuperarAcceso" asp-controller="Login">
+
                                 <div class="mb-3">
                                     <label class="form-label">Correo Electrónico</label>
-                                    @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", @type = "email" })
+                                    <input type="email" asp-for="Correo" class="form-control">
                                 </div>
 
                                 <input type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4" value="Procesar">
@@ -31,7 +31,8 @@
                                     <p class="fs-4 mb-0 fw-bold">Ya tienes una cuenta?</p>
                                     <a class="text-primary fw-bold ms-2" href="@Url.Action("InicioSesion","Login")">Inicia Sesión</a>
                                 </div>
-                            }
+                                
+                              </form>
 
                         </div>
                     </div>

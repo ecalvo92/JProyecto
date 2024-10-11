@@ -6,9 +6,11 @@ namespace JWeb.Controllers
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _http;
-        public LoginController(IHttpClientFactory http)
+        private readonly IConfiguration _conf;
+        public LoginController(IHttpClientFactory http, IConfiguration conf)
         {
             _http = http;
+            _conf = conf;
         }
 
         [HttpGet]
@@ -22,19 +24,22 @@ namespace JWeb.Controllers
         {
             using (var client = _http.CreateClient())
             {
-                string url = "https://localhost:7077/api/Login/CrearCuenta";
+                string url = _conf.GetSection("Variables:RutaApi").Value + "Login/CrearCuenta";
                 JsonContent datos = JsonContent.Create(model);
 
                 var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 
-                if (response.IsSuccessStatusCode)
-                { 
-                    var result = response.Content.ReadFromJsonAsync<Usuario>().Result;
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("InicioSesion", "Login");
                 }
-
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
             }
-
-            return View();
         }
 
 
