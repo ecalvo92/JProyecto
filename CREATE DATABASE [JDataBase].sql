@@ -43,9 +43,9 @@ GO
 
 SET IDENTITY_INSERT [dbo].[tUsuario] ON 
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (2, N'304590415', N'Eduardo Calvo Castillo', N'ecalvo90415@ufide.ac.cr', N'90415', 1, 2)
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (7, N'208560001', N'Jose Daniel Villalobos', N'jvillalobos60001@ufide.ac.cr', N'2O/TarIM31mAlvkP2hOuDQ==', 1, 2)
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (4, N'304590416', N'Eduardo Calvo Castillo', N'ecalvo90416@ufide.ac.cr', N'90416', 1, 2)
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (8, N'118010406', N'Karen Jiménez Román', N'kjimenez10406@ufide.ac.cr', N'L9q/+aRgNy1e4jpaIV3g9A==', 1, 2)
 GO
 SET IDENTITY_INSERT [dbo].[tUsuario] OFF
 GO
@@ -90,6 +90,28 @@ BEGIN
 		INSERT INTO dbo.tUsuario (Identificacion,Nombre,Correo,Contrasenna,Activo,ConsecutivoRol)
 		VALUES (@Identificacion,@Nombre,@Correo,@Contrasenna,@EstadoActivo,@RolUsuario)
 	END
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[IniciarSesion]
+	@Correo			varchar(80),
+	@Contrasenna	varchar(255)
+AS
+BEGIN
+	
+	SELECT	U.Consecutivo,
+			Identificacion,
+			Nombre,
+			Correo,
+			Activo,
+			ConsecutivoRol,
+			R.NombreRol
+	  FROM	dbo.tUsuario U
+	  INNER JOIN dbo.tRol R ON U.ConsecutivoRol = R.Consecutivo
+	  WHERE	Correo = @Correo
+		AND Contrasenna = @Contrasenna
+		AND Activo = 1
 
 END
 GO

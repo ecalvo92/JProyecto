@@ -116,11 +116,11 @@
 
                                         @if (Context.Session.GetString("NombreUsuario") != null)
                                         {
-                                            <a href="@Url.Action("IniciarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Cerrar Sesión</a>
+                                            <a href="@Url.Action("CerrarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Cerrar Sesión</a>
                                         }
                                         else
                                         {
-                                          <a href="@Url.Action("IniciarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Iniciar Sesión</a>    
+                                            <a href="@Url.Action("IniciarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Iniciar Sesión</a>    
                                         }
                                         
                                     </div>
