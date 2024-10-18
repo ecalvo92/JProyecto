@@ -1,5 +1,7 @@
 ﻿using JWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace JWeb.Controllers
 {
@@ -45,15 +47,36 @@ namespace JWeb.Controllers
 
 
         [HttpGet]
-        public IActionResult InicioSesion()
+        public IActionResult IniciarSesion()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult InicioSesion(Usuario model)
+        public IActionResult IniciarSesion(Usuario model)
         {
-            return View();
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:RutaApi").Value + "Login/IniciarSesion";
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    var datosContenido = JsonSerializer.Deserialize<Usuario>((JsonElement)result.Contenido!);
+
+                    HttpContext.Session.SetString("NombreUsuario", datosContenido!.Nombre);
+
+                    return RedirectToAction("Inicio", "Home");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
         }
 
 

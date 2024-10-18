@@ -12,13 +12,19 @@
                 <div class="col-md-8 col-lg-6 col-xxl-3">
                     <div class="card mb-0">
                         <div class="card-body">
-                            <a href="@Url.Action("Index","Home")" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                            <a href="@Url.Action("Inicio","Home")" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="~/images/logo-light.svg" alt="">
                             </a>
 
                             <p class="text-center">Inicio de sesión</p>
 
-                            <form asp-action="InicioSesion" asp-controller="Login">
+                            @if (ViewBag.Mensaje != null)
+
+                            {
+                                <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+                            }
+
+                            <form asp-action="IniciarSesion" asp-controller="Login">
 
                                 <div class="mb-3">
                                     <label class="form-label">Correo Electrónico</label>

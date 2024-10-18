@@ -1,4 +1,13 @@
-﻿<!doctype html>
+﻿@{
+    var nombreUsuario = "Invitado";
+
+    @if (Context.Session.GetString("NombreUsuario") != null)
+    {
+        nombreUsuario = @Context.Session.GetString("NombreUsuario");
+    }
+}
+
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -15,7 +24,7 @@
         <aside class="left-sidebar">
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="./index.html" class="text-nowrap logo-img">
+                    <a href="@Url.Action("Inicio","Home")" class="text-nowrap logo-img">
                         <img src="~/images/logo-light.svg" alt="" />
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -79,12 +88,17 @@
                         </li>
                     </ul>
                     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">                          
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+
+                            @nombreUsuario
+
                             <li class="nav-item dropdown">
+
                                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     <img src="~/images/user-1.jpg" alt="" width="35" height="35" class="rounded-circle">
                                 </a>
+
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                                     <div class="message-body">
                                         <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
@@ -99,7 +113,16 @@
                                             <i class="ti ti-list-check fs-6"></i>
                                             <p class="mb-0 fs-3">My Task</p>
                                         </a>
-                                        <a href="@Url.Action("InicioSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Iniciar Sesión</a>
+
+                                        @if (Context.Session.GetString("NombreUsuario") != null)
+                                        {
+                                            <a href="@Url.Action("IniciarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Cerrar Sesión</a>
+                                        }
+                                        else
+                                        {
+                                          <a href="@Url.Action("IniciarSesion","Login")" class="btn btn-outline-primary mx-3 mt-2 d-block">Iniciar Sesión</a>    
+                                        }
+                                        
                                     </div>
                                 </div>
                             </li>
