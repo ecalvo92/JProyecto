@@ -1,0 +1,32 @@
+﻿@model Usuario
+
+<div class="card-body">
+    <h5 class="card-title fw-semibold mb-4">Actualizar Contraseña</h5>
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="CambiarContrasenna" asp-controller="Usuario">
+
+                <div class="mb-3">
+                    <label class="form-label">Contraseña Actual</label>
+                    <input type="password" class="form-control" asp-for="ContrasennaAnterior">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nueva Contraseña</label>
+                    <input type="password" class="form-control" asp-for="Contrasenna">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control" asp-for="ConfirmarContrasenna">
+                </div>
+               
+                <input type="submit" class="btn btn-primary" value="Procesar">
+            </form>
+        </div>
+    </div>
+</div>

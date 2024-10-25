@@ -9,5 +9,6 @@
         public string Contrasenna { get; set; } = string.Empty;
         public bool UsaClaveTemp { get; set; }
         public DateTime Vigencia { get; set; }
+        public string ContrasennaAnterior { get; set; } = string.Empty;
     }
 }

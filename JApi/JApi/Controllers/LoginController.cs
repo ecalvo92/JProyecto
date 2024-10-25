@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -84,6 +85,11 @@ namespace JApi.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
+
+                //var parameters = new DynamicParameters();
+                //parameters.Add("CorreoElectronico", model.Correo);
+                //var result = context.QueryFirstOrDefault<Usuario>("ValidarUsuario", parameters);
+
                 var result = context.QueryFirstOrDefault<Usuario>("ValidarUsuario", new { model.Correo });
 
                 if (result != null)
@@ -198,7 +204,12 @@ namespace JApi.Controllers
             SmtpClient client = new SmtpClient("smtp.office365.com", 587);
             client.Credentials = new System.Net.NetworkCredential(cuenta, contrasenna);
             client.EnableSsl = true;
-            client.Send(message);
+
+            //Esto es para que no se intente enviar el correo si no hay una contraseña
+            if (!string.IsNullOrEmpty(contrasenna))
+            { 
+                client.Send(message);
+            }
         }
 
     }
