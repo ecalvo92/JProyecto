@@ -56,8 +56,16 @@ namespace JApi.Controllers
 
                 if (result != null)
                 {
-                    respuesta.Codigo = 0;
-                    respuesta.Contenido = result;
+                    if (result.UsaClaveTemp && result.Vigencia < DateTime.Now)
+                    {
+                        respuesta.Codigo = -1;
+                        respuesta.Mensaje = "Su información de acceso temporal ha expirado";
+                    }
+                    else
+                    { 
+                        respuesta.Codigo = 0;
+                        respuesta.Contenido = result;
+                    }
                 }
                 else
                 {
@@ -83,7 +91,7 @@ namespace JApi.Controllers
                     var Codigo = GenerarCodigo();
                     var Contrasenna = Encrypt(Codigo);
                     var UsaClaveTemp = true;
-                    var Vigencia = DateTime.Now.AddMinutes(60);
+                    var Vigencia = DateTime.Now.AddMinutes(10);
                     context.Execute("ActualizarContrasenna", new { result.Consecutivo, Contrasenna, UsaClaveTemp, Vigencia });
 
                     var ruta = Path.Combine(_env.ContentRootPath, "RecuperarAcceso.html");
