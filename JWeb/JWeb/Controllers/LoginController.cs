@@ -96,7 +96,25 @@ namespace JWeb.Controllers
         [HttpPost]
         public IActionResult RecuperarAcceso(Usuario model)
         {
-            return View();
+            using (var client = _http.CreateClient())
+            {
+                string url = _conf.GetSection("Variables:RutaApi").Value + "Login/RecuperarAcceso";
+
+                JsonContent datos = JsonContent.Create(model);
+
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    return RedirectToAction("IniciarSesion", "Login");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View();
+                }
+            }
         }
 
 

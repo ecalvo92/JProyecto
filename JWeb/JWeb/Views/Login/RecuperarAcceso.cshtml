@@ -18,6 +18,11 @@
 
                             <p class="text-center">Recuperar acceso</p>
                             
+                            @if (ViewBag.Mensaje != null)
+                            {
+                                <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+                            }
+
                             <form asp-action="RecuperarAcceso" asp-controller="Login">
 
                                 <div class="mb-3">
