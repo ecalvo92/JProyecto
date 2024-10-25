@@ -1,0 +1,33 @@
+﻿@model List<Usuario>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Lista de Usuarios</h5>
+
+        <div class="table-responsive">
+            <table class="table text-nowrap align-middle mb-0">
+                <thead>
+                    <tr class="border-2 border-bottom border-primary border-0">
+                        <th>#</th>
+                        <th>Identificación</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Consecutivo</td>
+                            <td>@item.Identificacion</td>
+                            <td>@item.Nombre</td>
+                            <td>@item.Correo</td>
+                            <td>@item.NombreRol</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

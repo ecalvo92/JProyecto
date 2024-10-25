@@ -25,6 +25,8 @@ CREATE TABLE [dbo].[tUsuario](
 	[Contrasenna] [varchar](255) NOT NULL,
 	[Activo] [bit] NOT NULL,
 	[ConsecutivoRol] [tinyint] NOT NULL,
+	[UsaClaveTemp] [bit] NOT NULL,
+	[Vigencia] [datetime] NOT NULL,
  CONSTRAINT [PK_tUsuario] PRIMARY KEY CLUSTERED 
 (
 	[Consecutivo] ASC
@@ -43,9 +45,9 @@ GO
 
 SET IDENTITY_INSERT [dbo].[tUsuario] ON 
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (7, N'208560001', N'Jose Daniel Villalobos', N'jvillalobos60001@ufide.ac.cr', N'2O/TarIM31mAlvkP2hOuDQ==', 1, 2)
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (7, N'208560001', N'Jose Daniel Villalobos', N'jvillalobos60001@ufide.ac.cr', N'U58Ut5UeufTBw6eXYoA/fw==', 1, 2, 0, CAST(N'2024-10-24T23:00:28.580' AS DateTime))
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol]) VALUES (8, N'118010406', N'Karen Jiménez Román', N'kjimenez10406@ufide.ac.cr', N'L9q/+aRgNy1e4jpaIV3g9A==', 1, 2)
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (8, N'118010406', N'Karen Jiménez Román', N'kjimenez10406@ufide.ac.cr', N'gUfwF2z6Q79+m6n4F1egHA==', 1, 2, 0, CAST(N'2024-10-24T20:15:37.117' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[tUsuario] OFF
 GO
@@ -68,6 +70,41 @@ GO
 ALTER TABLE [dbo].[tUsuario] CHECK CONSTRAINT [FK_tUsuario_tRol]
 GO
 
+CREATE PROCEDURE [dbo].[ActualizarContrasenna]
+	@Consecutivo			bigint,
+	@Contrasenna			varchar(255),
+	@UsaClaveTemp			bit,
+	@Vigencia				datetime
+AS
+BEGIN
+
+	UPDATE dbo.tUsuario
+	   SET Contrasenna = @Contrasenna,
+		   UsaClaveTemp = @UsaClaveTemp,
+		   Vigencia = @Vigencia
+	 WHERE Consecutivo = @Consecutivo
+	
+END
+GO
+
+CREATE PROCEDURE [dbo].[ConsultarUsuarios]
+	
+AS
+BEGIN
+	
+	SELECT	U.Consecutivo,
+			Identificacion,
+			Nombre,
+			Correo,
+			Activo,
+			ConsecutivoRol,
+			R.NombreRol
+	  FROM	dbo.tUsuario U
+	  INNER JOIN dbo.tRol R ON U.ConsecutivoRol = R.Consecutivo
+
+END
+GO
+
 CREATE PROCEDURE [dbo].[CrearCuenta]
 	@Identificacion varchar(20),
 	@Nombre			varchar(255),
@@ -76,8 +113,9 @@ CREATE PROCEDURE [dbo].[CrearCuenta]
 AS
 BEGIN
 
-	DECLARE @EstadoActivo BIT = 1
-	DECLARE @RolUsuario INT
+	DECLARE @EstadoActivo BIT = 1,
+			@RolUsuario INT,
+			@UsaClaveTemp BIT = 0
 
 	SELECT	@RolUsuario = Consecutivo
 	FROM	dbo.tRol
@@ -87,8 +125,8 @@ BEGIN
 			      WHERE Identificacion = @Identificacion
 					OR	Correo = @Correo)
 	BEGIN
-		INSERT INTO dbo.tUsuario (Identificacion,Nombre,Correo,Contrasenna,Activo,ConsecutivoRol)
-		VALUES (@Identificacion,@Nombre,@Correo,@Contrasenna,@EstadoActivo,@RolUsuario)
+		INSERT INTO dbo.tUsuario (Identificacion,Nombre,Correo,Contrasenna,Activo,ConsecutivoRol,UsaClaveTemp,Vigencia)
+		VALUES (@Identificacion,@Nombre,@Correo,@Contrasenna,@EstadoActivo,@RolUsuario,@UsaClaveTemp,GETDATE())
 	END
 
 END
@@ -106,12 +144,33 @@ BEGIN
 			Correo,
 			Activo,
 			ConsecutivoRol,
-			R.NombreRol
+			R.NombreRol,
+			UsaClaveTemp,
+			Vigencia
 	  FROM	dbo.tUsuario U
 	  INNER JOIN dbo.tRol R ON U.ConsecutivoRol = R.Consecutivo
 	  WHERE	Correo = @Correo
 		AND Contrasenna = @Contrasenna
 		AND Activo = 1
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[ValidarUsuario]
+	@Correo	varchar(80)
+AS
+BEGIN
+	
+	SELECT	U.Consecutivo,
+			Identificacion,
+			Nombre,
+			Correo,
+			Activo,
+			ConsecutivoRol,
+			R.NombreRol
+	  FROM	dbo.tUsuario U
+	  INNER JOIN dbo.tRol R ON U.ConsecutivoRol = R.Consecutivo
+	  WHERE	Correo = @Correo
 
 END
 GO

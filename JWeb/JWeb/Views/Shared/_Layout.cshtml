@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="~/css/styles.min.css" />
 </head>
 
-<body>
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+<body class="page-wrapper">
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
          data-sidebar-position="fixed" data-header-position="fixed">
         <aside class="left-sidebar">
             <div>
@@ -33,46 +33,27 @@
                 </div>
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
-                        <li class="nav-small-cap">
-                            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-                            <span class="hide-menu">Home</span>
-                        </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./index.html" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("Inicio","Home")" aria-expanded="false">
                                 <span>
                                     <iconify-icon icon="solar:home-smile-bold-duotone" class="fs-6"></iconify-icon>
                                 </span>
-                                <span class="hide-menu">Dashboard</span>
+                                <span class="hide-menu">Inicio</span>
                             </a>
                         </li>
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-                            <span class="hide-menu">UI COMPONENTS 2026</span>
+                            <span class="hide-menu">Mantenimientos</span>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+                            <a class="sidebar-link" href="@Url.Action("ConsultarUsuarios","Usuario")" aria-expanded="false">
                                 <span>
                                     <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
                                 </span>
-                                <span class="hide-menu">Buttons</span>
+                                <span class="hide-menu">Usuarios</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
-                                <span>
-                                    <iconify-icon icon="solar:danger-circle-bold-duotone" class="fs-6"></iconify-icon>
-                                </span>
-                                <span class="hide-menu">Alerts</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
-                                <span>
-                                    <iconify-icon icon="solar:bookmark-square-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
-                                </span>
-                                <span class="hide-menu">Card</span>
-                            </a>
-                        </li>
+                        
                     </ul>
                 </nav>
             </div>
