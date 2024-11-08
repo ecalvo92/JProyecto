@@ -1,16 +1,21 @@
 ﻿using Dapper;
 using JApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Mail;
 using System.Reflection.Metadata;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace JApi.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
@@ -63,7 +68,9 @@ namespace JApi.Controllers
                         respuesta.Mensaje = "Su información de acceso temporal ha expirado";
                     }
                     else
-                    { 
+                    {
+                        result.Token = GenerarToken(result);
+
                         respuesta.Codigo = 0;
                         respuesta.Contenido = result;
                     }
@@ -210,6 +217,25 @@ namespace JApi.Controllers
             { 
                 client.Send(message);
             }
+        }
+
+        private string GenerarToken(Usuario model)
+        {
+            string SecretKey = _conf.GetSection("Variables:Llave").Value!;
+            
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim("IdUsuario", model.Consecutivo.ToString()));
+            claims.Add(new Claim("IdRol", model.ConsecutivoRol.ToString()));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(20),
+                signingCredentials: cred);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }
