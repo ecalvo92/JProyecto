@@ -16,6 +16,8 @@
     <title>Proyecto Web Jueves Noche</title>
     <link rel="shortcut icon" type="image/png" href="~/images/seodashlogo.png" />
     <link rel="stylesheet" href="~/css/styles.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
 </head>
 
 <body class="page-wrapper">
@@ -41,12 +43,10 @@
                                 <span class="hide-menu">Inicio</span>
                             </a>
                         </li>
-                        @if (Context.Session.GetString("NombreUsuario") != null)
+
+                        @if (Context.Session.GetString("RolUsuario") != null && 
+                             @Context.Session.GetString("RolUsuario") == "1")
                         {
-                            <li class="nav-small-cap">
-                                <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-                                <span class="hide-menu">Mantenimientos</span>
-                            </li>
                             <li class="sidebar-item">
                                 <a class="sidebar-link" href="@Url.Action("ConsultarUsuarios","Usuario")" aria-expanded="false">
                                     <span>
@@ -87,7 +87,7 @@
                                     <div class="message-body">
                                         @if (Context.Session.GetString("NombreUsuario") != null)
                                         {
-                                            <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                                            <a href="@Url.Action("ActualizarPerfil","Usuario")" class="d-flex align-items-center gap-2 dropdown-item">
                                                 <i class="ti ti-user fs-6"></i>
                                                 <p class="mb-0 fs-3">Mi Perfil</p>
                                             </a>
@@ -122,6 +122,8 @@
     <script src="~/js/sidebarmenu.js"></script>
     <script src="~/js/app.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 </body>
 
 </html>

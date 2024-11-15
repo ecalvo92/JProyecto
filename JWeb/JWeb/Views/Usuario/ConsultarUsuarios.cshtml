@@ -5,7 +5,7 @@
         <h5 class="card-title">Lista de Usuarios</h5>
 
         <div class="table-responsive">
-            <table class="table text-nowrap align-middle mb-0">
+            <table id="example" class="table text-nowrap align-middle mb-0">
                 <thead>
                     <tr class="border-2 border-bottom border-primary border-0">
                         <th>#</th>
@@ -13,6 +13,7 @@
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Rol</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -24,6 +25,17 @@
                             <td>@item.Nombre</td>
                             <td>@item.Correo</td>
                             <td>@item.NombreRol</td>
+                            <td>
+
+                              <a href="" class="btn">
+                                    <i class="fa fa-edit" style="font-size: 1.6em;"></i>
+                              </a>
+
+                                <a href="" class="btn">
+                                    <i class="fa fa-trash" style="font-size: 1.6em;"></i>
+                                </a>
+
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -31,3 +43,19 @@
         </div>
     </div>
 </div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.1.8/i18n/es-ES.json',
+            },
+            columnDefs: [
+                { targets: [0, 1, 2, 3, 4], type: "string" }
+            ]
+        });
+    });
+
+</script>

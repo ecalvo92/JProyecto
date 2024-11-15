@@ -79,6 +79,7 @@ namespace JWeb.Controllers
                     HttpContext.Session.SetString("ConsecutivoUsuario", datosContenido!.Consecutivo.ToString());
                     HttpContext.Session.SetString("NombreUsuario", datosContenido!.Nombre);
                     HttpContext.Session.SetString("TokenUsuario", datosContenido!.Token);
+                    HttpContext.Session.SetString("RolUsuario", datosContenido!.ConsecutivoRol.ToString());
 
                     return RedirectToAction("Inicio", "Home");
                 }

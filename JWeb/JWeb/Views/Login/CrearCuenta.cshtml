@@ -27,12 +27,14 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Identificación</label>
-                                    <input type="text" asp-for="Identificacion" class="form-control">
+                                    <input type="text" asp-for="Identificacion" class="form-control"
+                                    onkeyup="ConsultarNombre();">
                                 </div>
                               
                                 <div class="mb-3">
                                     <label class="form-label">Nombre</label>
-                                    <input type="text" asp-for="Nombre" class="form-control">
+                                    <input type="text" asp-for="Nombre" class="form-control" readonly="readonly"
+                                    style="background-color:#f1f1f1">
                                 </div>
 
                                 <div class="mb-3">
@@ -61,3 +63,5 @@
         </div>
     </div>
 </div>
+
+<script src="~/js/comunes.js"></script>
