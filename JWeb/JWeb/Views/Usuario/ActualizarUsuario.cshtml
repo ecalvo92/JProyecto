@@ -1,16 +1,18 @@
 ﻿@model Usuario
 
 <div class="card-body">
-    <h5 class="card-title fw-semibold mb-4">Actualizar Perfil</h5>
+    <h5 class="card-title fw-semibold mb-4">Actualizar Usuario</h5>
 
     @if (ViewBag.Mensaje != null)
     {
-        <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+            <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
     }
 
     <div class="card">
         <div class="card-body">
-            <form asp-action="ActualizarPerfil" asp-controller="Usuario">
+            <form asp-action="ActualizarUsuario" asp-controller="Usuario">
+
+                <input type="hidden" asp-for="Consecutivo" class="form-control">
 
                 <div class="mb-3">
                     <label class="form-label">Identificación</label>
@@ -20,8 +22,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Nombre</label>
-                    <input type="text" asp-for="Nombre" class="form-control" readonly="readonly"
-                           style="background-color:#f1f1f1">
+                    <input type="text" asp-for="Nombre" class="form-control">
                 </div>
 
                 <div class="mb-3">
@@ -31,8 +32,18 @@
 
                 <div class="mb-3">
                     <label class="form-label">Rol Sistema</label>
-                    <input type="text" asp-for="NombreRol" class="form-control" readonly="readonly"
-                           style="background-color:#f1f1f1">
+                    <select asp-for="ConsecutivoRol" class="form-control">
+                        @{
+                            var roles = ViewBag.DropDownRoles as List<Rol>;
+                            if (roles != null)
+                            { 
+                              @foreach (var item in roles)
+                              {
+                                  <option value="@item.Consecutivo">@item.NombreRol</option>
+                              }
+                            }
+                        }
+                    </select>
                 </div>
 
                 <input type="submit" class="btn btn-primary" value="Procesar">

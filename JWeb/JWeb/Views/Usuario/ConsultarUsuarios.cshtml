@@ -4,6 +4,11 @@
     <div class="card-body">
         <h5 class="card-title">Lista de Usuarios</h5>
 
+        @if (ViewBag.Mensaje != null)
+        {
+            <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+        }
+
         <div class="table-responsive">
             <table id="example" class="table text-nowrap align-middle mb-0">
                 <thead>
@@ -13,6 +18,7 @@
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Rol</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -25,13 +31,15 @@
                             <td>@item.Nombre</td>
                             <td>@item.Correo</td>
                             <td>@item.NombreRol</td>
+                            <td>@item.Estado</td>
                             <td>
 
-                              <a href="" class="btn">
+                                <a href="@Url.Action("ActualizarUsuario","Usuario", new { consecutivo = item.Consecutivo })" class="btn">
                                     <i class="fa fa-edit" style="font-size: 1.6em;"></i>
-                              </a>
+                                </a>
 
-                                <a href="" class="btn">
+                                <a id="AbrirModal" href="#" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                                  data-consecutivo="@item.Consecutivo" data-nombre="@item.Nombre">
                                     <i class="fa fa-trash" style="font-size: 1.6em;"></i>
                                 </a>
 
@@ -40,6 +48,28 @@
                     }
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:650px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-action="ActualizarEstado" asp-controller="Usuario">
+                <div class="modal-body">
+                    <input type="hidden" id="Consecutivo" name="Consecutivo" value="">
+                    ¿Desea cambiar el estado del usuario <label id="Nombre"></label>?
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Procesar</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -56,6 +86,13 @@
                 { targets: [0, 1, 2, 3, 4], type: "string" }
             ]
         });
+    });
+
+    $(document).on("click","#AbrirModal", function(){
+    
+      $("#Nombre").text( $(this).attr("data-nombre") );
+      $("#Consecutivo").val( $(this).attr("data-consecutivo") );
+    
     });
 
 </script>
