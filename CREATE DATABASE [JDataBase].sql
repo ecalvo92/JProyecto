@@ -7,6 +7,19 @@ GO
 USE [JDataBase]
 GO
 
+CREATE TABLE [dbo].[tError](
+	[Consecutivo] [bigint] IDENTITY(1,1) NOT NULL,
+	[ConsecutivoUsuario] [bigint] NOT NULL,
+	[Mensaje] [varchar](max) NOT NULL,
+	[Origen] [varchar](50) NOT NULL,
+	[FechaHora] [datetime] NOT NULL,
+ CONSTRAINT [PK_tError] PRIMARY KEY CLUSTERED 
+(
+	[Consecutivo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
 CREATE TABLE [dbo].[tRol](
 	[Consecutivo] [tinyint] IDENTITY(1,1) NOT NULL,
 	[NombreRol] [varchar](50) NOT NULL,
@@ -34,6 +47,17 @@ CREATE TABLE [dbo].[tUsuario](
 ) ON [PRIMARY]
 GO
 
+SET IDENTITY_INSERT [dbo].[tError] ON 
+GO
+INSERT [dbo].[tError] ([Consecutivo], [ConsecutivoUsuario], [Mensaje], [Origen], [FechaHora]) VALUES (2, 0, N'Could not find stored procedure ''ValidarUsuario2''.', N'/api/Login/RecuperarAcceso', CAST(N'2024-11-21T20:48:20.157' AS DateTime))
+GO
+INSERT [dbo].[tError] ([Consecutivo], [ConsecutivoUsuario], [Mensaje], [Origen], [FechaHora]) VALUES (3, 7, N'Could not find stored procedure ''ConsultarUsuarios2''.', N'/api/Usuario/ConsultarUsuarios', CAST(N'2024-11-21T20:53:17.820' AS DateTime))
+GO
+INSERT [dbo].[tError] ([Consecutivo], [ConsecutivoUsuario], [Mensaje], [Origen], [FechaHora]) VALUES (4, 7, N'Could not find stored procedure ''ConsultarUsuarios2''.', N'/api/Usuario/ConsultarUsuarios', CAST(N'2024-11-21T20:54:41.153' AS DateTime))
+GO
+SET IDENTITY_INSERT [dbo].[tError] OFF
+GO
+
 SET IDENTITY_INSERT [dbo].[tRol] ON 
 GO
 INSERT [dbo].[tRol] ([Consecutivo], [NombreRol]) VALUES (1, N'Administradores')
@@ -45,11 +69,11 @@ GO
 
 SET IDENTITY_INSERT [dbo].[tUsuario] ON 
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (7, N'208560001', N'Jose Daniel Villalobos', N'jvillalobos60001@ufide.ac.cr', N'2O/TarIM31mAlvkP2hOuDQ==', 1, 2, 0, CAST(N'2024-11-07T18:27:38.987' AS DateTime))
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (7, N'208560001', N'JOSE DANIEL VILLALOBOS OROZCO', N'jvillalobos60001@ufide.ac.cr', N'2O/TarIM31mAlvkP2hOuDQ==', 1, 1, 0, CAST(N'2024-11-07T18:27:38.987' AS DateTime))
 GO
 INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (8, N'118010406', N'KAREN JIMENEZ ROMAN', N'kjimenez10406@ufide.ac.cr', N'L9q/+aRgNy1e4jpaIV3g9A==', 1, 2, 0, CAST(N'2024-11-14T19:51:09.953' AS DateTime))
 GO
-INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (9, N'901130505', N'SEBASTIAN CRUZ OSPINA', N'scruz30505@ufide.ac.cr', N'p8kRLW0mGyEPpItL1R3bzg==', 1, 1, 0, CAST(N'2024-11-14T19:38:39.897' AS DateTime))
+INSERT [dbo].[tUsuario] ([Consecutivo], [Identificacion], [Nombre], [Correo], [Contrasenna], [Activo], [ConsecutivoRol], [UsaClaveTemp], [Vigencia]) VALUES (9, N'901130505', N'SEBASTIAN CRUZ OSPINA', N'scruz30505@ufide.ac.cr', N'p8kRLW0mGyEPpItL1R3bzg==', 1, 2, 0, CAST(N'2024-11-14T19:38:39.897' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[tUsuario] OFF
 GO
@@ -85,6 +109,20 @@ BEGIN
 		   UsaClaveTemp = @UsaClaveTemp,
 		   Vigencia = @Vigencia
 	 WHERE Consecutivo = @Consecutivo
+	
+END
+GO
+
+CREATE PROCEDURE [dbo].[ActualizarEstado]
+	@Consecutivo		bigint
+AS
+BEGIN
+
+	UPDATE dbo.tUsuario
+    SET Activo =	CASE WHEN Activo = 1 
+	   				     THEN 0
+						 ELSE 1 END
+	WHERE Consecutivo = @Consecutivo
 	
 END
 GO
@@ -157,6 +195,7 @@ BEGIN
 			Nombre,
 			Correo,
 			Activo,
+			(CASE WHEN Activo = 1 THEN 'Activo' ELSE 'Inactivo' END) 'Estado',
 			ConsecutivoRol,
 			R.NombreRol
 	  FROM	dbo.tUsuario U
@@ -212,6 +251,19 @@ BEGIN
 	  WHERE	Correo = @Correo
 		AND Contrasenna = @Contrasenna
 		AND Activo = 1
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarError]
+	@Consecutivo	bigint,
+	@Mensaje		varchar(max),
+	@Origen			varchar(50)
+AS
+BEGIN
+
+	INSERT INTO dbo.tError(ConsecutivoUsuario,Mensaje,Origen,FechaHora)
+    VALUES (@Consecutivo,@Mensaje,@Origen,GETDATE())
 
 END
 GO

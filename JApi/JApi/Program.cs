@@ -53,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler("/api/Error/RegistrarErrorBD");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

@@ -13,7 +13,7 @@ namespace JApi.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IConfiguration _conf;
-        public UsuarioController(IConfiguration conf, IHostEnvironment env)
+        public UsuarioController(IConfiguration conf)
         {
             _conf = conf;
         }
@@ -97,7 +97,7 @@ namespace JApi.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-                var result = context.Query<Usuario>("ConsultarUsuarios", new { });
+                var result = context.Query<Usuario>("ConsultarUsuarios2", new { });
 
                 if (result.Any())
                 {
