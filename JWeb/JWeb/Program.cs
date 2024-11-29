@@ -10,11 +10,8 @@ builder.Services.AddScoped<IMetodosComunes, MetodosComunes>();
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+app.UseExceptionHandler("/Error/MostrarError");
+app.UseHsts();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
