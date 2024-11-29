@@ -42,6 +42,31 @@ namespace JApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("ConsultarProducto")]
+        public IActionResult ConsultarProducto(long Consecutivo)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.QueryFirstOrDefault<Producto>("ConsultarProducto", new { Consecutivo });
+
+                if (result != null)
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No se encontró la información del producto";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+
         [HttpPut]
         [Route("ActualizarEstado")]
         public IActionResult ActualizarEstado(Producto model)
@@ -73,11 +98,12 @@ namespace JApi.Controllers
             using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
             {
                 var respuesta = new Respuesta();
-                var result = context.Execute("RegistrarProducto", new { model.Nombre, model.Precio, model.Inventario, model.Imagen });
+                var result = context.QueryFirstOrDefault<Producto>("RegistrarProducto", new { model.Nombre, model.Precio, model.Inventario, model.Imagen });
 
-                if (result > 0)
+                if (result != null)
                 {
                     respuesta.Codigo = 0;
+                    respuesta.Mensaje = result.Consecutivo.ToString();
                 }
                 else
                 {
@@ -88,6 +114,30 @@ namespace JApi.Controllers
                 return Ok(respuesta);
             }
         }
+
+        [HttpPut]
+        [Route("ActualizarProducto")]
+        public IActionResult ActualizarProducto(Producto model)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Execute("ActualizarProducto", new { model.Consecutivo, model.Nombre, model.Precio, model.Inventario });
+
+                if (result > 0)
+                {
+                    respuesta.Codigo = 0;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "La información del producto no se ha actualizado correctamente";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
 
     }
 }

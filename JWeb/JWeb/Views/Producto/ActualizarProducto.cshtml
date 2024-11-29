@@ -1,0 +1,47 @@
+﻿@model Producto
+
+<div class="card-body">
+    <h5 class="card-title fw-semibold mb-4">Actualizar Producto</h5>
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="ActualizarProducto" asp-controller="Producto" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="Consecutivo" class="form-control">
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" asp-for="Nombre" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <input type="text" asp-for="Precio" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Inventario</label>
+                    <input type="text" asp-for="Inventario" class="form-control">
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-9">
+                        <label class="form-label">Imagen</label>
+                        <input type="file" accept="image/png" class="form-control" id="ImagenProducto" name="ImagenProducto">
+                    </div>
+                    <div class="col-3">
+                        <img src="@Model.Imagen" style="width:180px; height:200px;">
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-primary" value="Procesar">
+
+            </form>
+        </div>
+    </div>
+</div>

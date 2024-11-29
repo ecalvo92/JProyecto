@@ -20,6 +20,20 @@ CREATE TABLE [dbo].[tError](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
+CREATE TABLE [dbo].[tProducto](
+	[Consecutivo] [bigint] IDENTITY(1,1) NOT NULL,
+	[Nombre] [varchar](50) NOT NULL,
+	[Precio] [decimal](18, 2) NOT NULL,
+	[Inventario] [int] NOT NULL,
+	[Imagen] [varchar](50) NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_tProducto] PRIMARY KEY CLUSTERED 
+(
+	[Consecutivo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
 CREATE TABLE [dbo].[tRol](
 	[Consecutivo] [tinyint] IDENTITY(1,1) NOT NULL,
 	[NombreRol] [varchar](50) NOT NULL,
@@ -56,6 +70,15 @@ GO
 INSERT [dbo].[tError] ([Consecutivo], [ConsecutivoUsuario], [Mensaje], [Origen], [FechaHora]) VALUES (4, 7, N'Could not find stored procedure ''ConsultarUsuarios2''.', N'/api/Usuario/ConsultarUsuarios', CAST(N'2024-11-21T20:54:41.153' AS DateTime))
 GO
 SET IDENTITY_INSERT [dbo].[tError] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[tProducto] ON 
+GO
+INSERT [dbo].[tProducto] ([Consecutivo], [Nombre], [Precio], [Inventario], [Imagen], [Activo]) VALUES (3, N'XBox 360', CAST(225000.00 AS Decimal(18, 2)), 3, N'/products/', 1)
+GO
+INSERT [dbo].[tProducto] ([Consecutivo], [Nombre], [Precio], [Inventario], [Imagen], [Activo]) VALUES (4, N'XBox 361', CAST(50000.00 AS Decimal(18, 2)), 1, N'/products/', 1)
+GO
+SET IDENTITY_INSERT [dbo].[tProducto] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[tRol] ON 
@@ -127,6 +150,20 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [dbo].[ActualizarEstadoProducto]
+	@Consecutivo		bigint
+AS
+BEGIN
+
+	UPDATE dbo.tProducto
+    SET Activo =	CASE WHEN Activo = 1 
+	   				     THEN 0
+						 ELSE 1 END
+	WHERE Consecutivo = @Consecutivo
+	
+END
+GO
+
 CREATE PROCEDURE [dbo].[ActualizarPerfil]
 	@Consecutivo		bigint,
 	@Identificacion		varchar(20),
@@ -152,6 +189,56 @@ BEGIN
 
 	END
 	
+END
+GO
+
+CREATE PROCEDURE [dbo].[ActualizarProducto]
+	@Consecutivo	BIGINT,
+	@Nombre			varchar(50),
+	@Precio			decimal(18,2),
+	@Inventario		int
+AS
+BEGIN
+
+	UPDATE dbo.tProducto
+	SET Nombre = @Nombre,
+        Precio = @Precio,
+		Inventario = @Inventario
+	WHERE Consecutivo = @Consecutivo
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[ConsultarProducto]
+	@Consecutivo BIGINT
+AS
+BEGIN
+	
+	SELECT	Consecutivo,
+			Nombre,
+			Precio,
+			Inventario,
+			Imagen + CONVERT(VARCHAR,Consecutivo) + '.png' 'Imagen',
+			(CASE WHEN Activo = 1 THEN 'Activo' ELSE 'Inactivo' END) 'Estado'
+	  FROM	dbo.tProducto
+	  WHERE Consecutivo = @Consecutivo
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[ConsultarProductos]
+	
+AS
+BEGIN
+	
+	SELECT	Consecutivo,
+			Nombre,
+			Precio,
+			Inventario,
+			Imagen + CONVERT(VARCHAR,Consecutivo) + '.png' 'Imagen',
+			(CASE WHEN Activo = 1 THEN 'Activo' ELSE 'Inactivo' END) 'Estado'
+	  FROM	dbo.tProducto
+
 END
 GO
 
@@ -264,6 +351,22 @@ BEGIN
 
 	INSERT INTO dbo.tError(ConsecutivoUsuario,Mensaje,Origen,FechaHora)
     VALUES (@Consecutivo,@Mensaje,@Origen,GETDATE())
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[RegistrarProducto]
+	@Nombre		varchar(50),
+	@Precio		decimal(18,2),
+	@Inventario	int,
+	@Imagen		varchar(50)
+AS
+BEGIN
+
+	INSERT INTO dbo.tProducto (Nombre,Precio,Inventario,Imagen,Activo)
+	VALUES (@Nombre,@Precio,@Inventario,@Imagen,1)
+
+	SELECT @@IDENTITY Consecutivo
 
 END
 GO
