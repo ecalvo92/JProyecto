@@ -1,10 +1,7 @@
 ﻿using JWeb.Models;
 using JWeb.Servicios;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
 namespace JWeb.Controllers
@@ -118,11 +115,17 @@ namespace JWeb.Controllers
         [HttpGet]
         public IActionResult ConsultarUsuarios()
         {
+            if (!ValidarSiEsAdmin())
+                return RedirectToAction("Inicio", "Home");
+
             var datos = ObtenerDatosUsuarios();
             return View(datos);
         }
 
-        
+        private bool ValidarSiEsAdmin()
+        {
+            return (HttpContext.Session.GetString("RolUsuario") == "1" ? true : false);
+        }
 
         [HttpGet]
         public IActionResult ActualizarUsuario(long consecutivo)

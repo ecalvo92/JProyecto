@@ -192,7 +192,6 @@ namespace JWeb.Controllers
             {
                 string url = _conf.GetSection("Variables:RutaApi").Value + "Producto/ConsultarProductos";
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("TokenUsuario"));
                 var response = client.GetAsync(url).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 

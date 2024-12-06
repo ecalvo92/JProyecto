@@ -1,1 +1,101 @@
-﻿
+﻿@model List<Producto>
+
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+}
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-md-6 col-sm-12">
+
+            <div class="card">
+                <div class="text-center">
+                    <img src="@item.Imagen" class="card-img-top" style="width:175px; height:150px; margin-top:20px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nombre</h5>
+                    <p class="card-text">
+                        Precio: ¢ @item.Precio.ToString("N2") <br />
+                        Unidades: @item.Inventario
+                    </p>
+
+                    @if (Context.Session.GetString("RolUsuario") != null)
+                    {
+                        <div class="row">
+                            <div class="col-6">
+                                <input id=@item.Consecutivo type="number" class="form-control text-center" value="1" min="1" max=@item.Inventario
+                                       onkeypress="return false;">
+                            </div>
+                            <div class="col-6">
+                                <a onclick="ActualizarCarrito(@item.Consecutivo, @item.Inventario);" class="btn btn-primary" style="width:100%">Actualizar</a>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+
+    }
+
+</div>
+
+<script>
+
+    function ActualizarCarrito(ConsecutivoProducto, Inventario)
+    {
+          let cantidad = $("#" + ConsecutivoProducto).val();
+
+          $.ajax({
+            method: "POST",
+            url: "/Carrito/RegistrarCarrito",
+            dataType: "json",
+            data: {
+              "ConsecutivoProducto" : ConsecutivoProducto,
+              "Unidades" : cantidad
+            },
+            success: function (data) {
+              
+              if(data == 0)
+              {
+                MostrarMensajeOk("El producto se actualizó correctamente en su carrito");
+              }
+              else
+              {
+                MostrarMensaje("El producto no fue actualizado en su carrito");
+              }
+
+            }
+          });
+    }
+
+    function MostrarMensajeOk(texto)
+    {
+          Swal.fire({
+            title: "Información",
+            confirmButtonText: "Aceptar",
+            text: texto,
+            icon: "success"
+          }).then((result) => {
+
+            if (result.isConfirmed) {
+              window.location.href = "/Home/Inicio";
+            }
+          });
+    }
+
+    function MostrarMensaje(texto)
+    {
+        Swal.fire({
+          title: "Información",
+          text: texto,
+          icon: "info"
+        });
+    }
+
+</script>

@@ -7,7 +7,6 @@ using Microsoft.Data.SqlClient;
 
 namespace JApi.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductoController : ControllerBase
@@ -18,6 +17,7 @@ namespace JApi.Controllers
             _conf = conf;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("ConsultarProductos")]
         public IActionResult ConsultarProductos()
@@ -42,6 +42,8 @@ namespace JApi.Controllers
             }
         }
 
+
+        [Authorize]
         [HttpGet]
         [Route("ConsultarProducto")]
         public IActionResult ConsultarProducto(long Consecutivo)
@@ -67,6 +69,7 @@ namespace JApi.Controllers
         }
 
 
+        [Authorize]
         [HttpPut]
         [Route("ActualizarEstado")]
         public IActionResult ActualizarEstado(Producto model)
@@ -91,6 +94,7 @@ namespace JApi.Controllers
         }
 
 
+        [Authorize]
         [HttpPost]
         [Route("RegistrarProducto")]
         public IActionResult RegistrarProducto(Producto model)
@@ -115,6 +119,8 @@ namespace JApi.Controllers
             }
         }
 
+
+        [Authorize]
         [HttpPut]
         [Route("ActualizarProducto")]
         public IActionResult ActualizarProducto(Producto model)
