@@ -1,9 +1,11 @@
 ﻿@{
     var nombreUsuario = "Invitado";
+    var total = "¢ 0.0";
 
     @if (Context.Session.GetString("NombreUsuario") != null)
     {
         nombreUsuario = @Context.Session.GetString("NombreUsuario");
+        total = "¢ " + decimal.Parse(Context.Session.GetString("Total")!).ToString("N2");
     }
 }
 
@@ -67,6 +69,26 @@
                             </li>
                         }
 
+                        @if (Context.Session.GetString("RolUsuario") != null)
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="@Url.Action("ConsultarCarrito","Carrito")" aria-expanded="false">
+                                    <span>
+                                        <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
+                                    </span>
+                                    <span class="hide-menu">Mi Carrito</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="@Url.Action("ConsultarCompras","Carrito")" aria-expanded="false">
+                                    <span>
+                                        <iconify-icon icon="solar:layers-minimalistic-bold-duotone" class="fs-6"></iconify-icon>
+                                    </span>
+                                    <span class="hide-menu">Mis Compras</span>
+                                </a>
+                            </li>
+                        }
+
                     </ul>
                 </nav>
             </div>
@@ -81,6 +103,9 @@
                             </a>
                         </li>
                     </ul>
+
+                    <i class="fa fa-credit-card" style="margin-right:10px;"></i> @total
+
                     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
 

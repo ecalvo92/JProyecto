@@ -1,6 +1,10 @@
 ﻿using JWeb.Models;
+using JWeb.Servicios;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using static NuGet.Packaging.PackagingConstants;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace JWeb.Controllers
 {
@@ -8,10 +12,12 @@ namespace JWeb.Controllers
     {
         private readonly IHttpClientFactory _http;
         private readonly IConfiguration _conf;
-        public CarritoController(IHttpClientFactory http, IConfiguration conf)
+        private readonly IMetodosComunes _comunes;
+        public CarritoController(IHttpClientFactory http, IConfiguration conf, IMetodosComunes comunes)
         {
             _http = http;
             _conf = conf;
+            _comunes = comunes;
         }
 
         [HttpPost]
@@ -34,7 +40,69 @@ namespace JWeb.Controllers
                 var response = client.PostAsync(url, datos).Result;
                 var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
 
+                var carrito = _comunes.ConsultarCarritoServicio();
+                HttpContext.Session.SetString("Total", carrito.Sum(x => x.Total).ToString());
+
                 return Json(result!.Codigo);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ConsultarCarrito()
+        {
+            return View(_comunes.ConsultarCarritoServicio());
+        }
+
+        [HttpGet]
+        public IActionResult ConsultarCompras()
+        {
+            using (var client = _http.CreateClient())
+            {
+                var ConsecutivoUsuario = long.Parse(HttpContext.Session.GetString("ConsecutivoUsuario")!.ToString());
+
+                string url = _conf.GetSection("Variables:RutaApi").Value + "Carrito/ConsultarCompras?Consecutivo=" + ConsecutivoUsuario;
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("TokenUsuario"));
+                var response = client.GetAsync(url).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    var datosContenido = JsonSerializer.Deserialize<List<Carrito>>((JsonElement)result.Contenido!);
+                    return View(datosContenido!.ToList());
+                }
+
+                return View(new List<Carrito>());
+            }
+        }
+
+        [HttpPost]
+        public IActionResult RemoverProductoCarrito(Carrito model)
+        {
+            using (var client = _http.CreateClient())
+            {
+                var url = _conf.GetSection("Variables:RutaApi").Value + "Carrito/RemoverProductoCarrito";
+
+                model.ConsecutivoUsuario = long.Parse(HttpContext.Session.GetString("ConsecutivoUsuario")!.ToString());
+
+                JsonContent datos = JsonContent.Create(model);
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("TokenUsuario"));
+                var response = client.PostAsync(url, datos).Result;
+                var result = response.Content.ReadFromJsonAsync<Respuesta>().Result;
+
+                if (result != null && result.Codigo == 0)
+                {
+                    var carrito = _comunes.ConsultarCarritoServicio();
+                    HttpContext.Session.SetString("Total", carrito.Sum(x => x.Total).ToString());
+
+                    return RedirectToAction("ConsultarCarrito", "Carrito");
+                }
+                else
+                {
+                    ViewBag.Mensaje = result!.Mensaje;
+                    return View(_comunes.ConsultarCarritoServicio());
+                }
             }
         }
 

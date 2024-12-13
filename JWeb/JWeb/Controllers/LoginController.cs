@@ -81,6 +81,9 @@ namespace JWeb.Controllers
                     HttpContext.Session.SetString("TokenUsuario", datosContenido!.Token);
                     HttpContext.Session.SetString("RolUsuario", datosContenido!.ConsecutivoRol.ToString());
 
+                    var carrito = _comunes.ConsultarCarritoServicio();
+                    HttpContext.Session.SetString("Total", carrito.Sum(x => x.Total).ToString());
+
                     return RedirectToAction("Inicio", "Home");
                 }
                 else
