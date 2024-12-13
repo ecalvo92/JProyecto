@@ -54,7 +54,9 @@
             @if (Context.Session.GetString("Total") != null && Context.Session.GetString("Total") != "0")
             {
                 <div class="col-8">
+                  <form asp-action="PagarCarrito" asp-controller="Carrito">
                     <button type="submit" class="btn btn-outline-primary" style="width:200px">Pagar</button>
+                  </form>
                 </div>
             }
         </div>

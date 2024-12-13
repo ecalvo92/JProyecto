@@ -1,0 +1,60 @@
+﻿@model List<Carrito>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Mis Compras</h5>
+
+        @if (ViewBag.Mensaje != null)
+        {
+            <div class="alert alert-secondary text-center">@ViewBag.Mensaje</div>
+        }
+
+        <div class="table-responsive">
+            <table id="example" class="table text-nowrap align-middle mb-0">
+                <thead>
+                    <tr class="border-2 border-bottom border-primary border-0">
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Total</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Consecutivo</td>
+                            <td>@item.Nombre</td>
+                            <td>@item.Total.ToString("N2")</td>
+                            <td>@item.Fecha.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>
+                                <a href="@Url.Action("ConsultarDetalleFactura","Carrito", new { consecutivo = item.Consecutivo })" class="btn">
+                                    <i class="fa fa-eye" style="font-size: 1.6em;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.1.8/i18n/es-ES.json',
+            },
+            columnDefs: [
+                { targets: [0, 1, 2, 3, 4], type: "string" }
+            ]
+        });
+    });
+
+</script>

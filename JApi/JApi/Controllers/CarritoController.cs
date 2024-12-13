@@ -41,7 +41,6 @@ namespace JApi.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet]
         [Route("ConsultarCarrito")]
         public IActionResult ConsultarCarrito(long Consecutivo)
@@ -83,6 +82,77 @@ namespace JApi.Controllers
                 {
                     respuesta.Codigo = -1;
                     respuesta.Mensaje = "El producto no se ha removido del carrito";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpPost]
+        [Route("PagarCarrito")]
+        public IActionResult PagarCarrito(Carrito model)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Execute("PagarCarrito", new { model.ConsecutivoUsuario });
+
+                if (result > 0)
+                {
+                    respuesta.Codigo = 0;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No se realizó el pago de su carrito";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpGet]
+        [Route("ConsultarFacturas")]
+        public IActionResult ConsultarFacturas(long Consecutivo)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Query<Carrito>("ConsultarFacturas", new { Consecutivo });
+
+                if (result.Any())
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No hay facturas en este momento";
+                }
+
+                return Ok(respuesta);
+            }
+        }
+
+        [HttpGet]
+        [Route("ConsultarDetalleFactura")]
+        public IActionResult ConsultarDetalleFactura(long Consecutivo)
+        {
+            using (var context = new SqlConnection(_conf.GetSection("ConnectionStrings:DefaultConnection").Value))
+            {
+                var respuesta = new Respuesta();
+                var result = context.Query<Carrito>("ConsultarDetalleFactura", new { Consecutivo });
+
+                if (result.Any())
+                {
+                    respuesta.Codigo = 0;
+                    respuesta.Contenido = result;
+                }
+                else
+                {
+                    respuesta.Codigo = -1;
+                    respuesta.Mensaje = "No hay detalles para esa factura en este momento";
                 }
 
                 return Ok(respuesta);
